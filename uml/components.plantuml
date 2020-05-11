@@ -1,0 +1,38 @@
+@startuml
+left to right direction
+
+
+package "headless_vnc" #eeeeee {
+    [HeadlessVnc]
+    [RFBClient] -u-> [HeadlessVnc]
+    [VNCActionHelper] -u-> [HeadlessVnc]
+    [HeadlessVnc] -> [ScreenBuffer]
+}
+
+package "Contracts" #eeeeee {
+    package "spells" {
+        [DialogShownSpell]
+        [StartSurfingSpell]
+    }
+    spells -u-> [SpellBook]
+    spells .d.|> [ISpell]
+}
+
+package "InterfaceHunter" #eeeeee {
+    [TesseractOCR] -d-> [DetectText]
+    [OpenCV] -d-> [DetectBoxes]
+    [OpenCV] -> [DetectText]
+    [ButtonFeature] -> [DialogFeature]
+    [DetectBoxes] -d-> [DialogFeature]
+    [DetectBoxes] -d-> [ButtonFeature]
+    [DetectText] -d-> [DialogFeature]
+    [DetectText] -d-> [ButtonFeature]
+}
+
+[VNCSimulator] #Azure
+headless_vnc -[#6666ff]up-> [VNCSimulator]
+Contracts -[#6666ff]up-> [VNCSimulator]
+InterfaceHunter -[#6666ff]left-> [VNCSimulator]
+Contracts -[#6666ff]right- headless_vnc
+
+@enduml
